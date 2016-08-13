@@ -11,23 +11,26 @@ module Okuribito
     CLASS_METHOD_SYMBOL = "."
     INSTANCE_METHOD_SYMBOL = "#"
     PATTERN = /\A(?<symbol>[#{CLASS_METHOD_SYMBOL}#{INSTANCE_METHOD_SYMBOL}])(?<method_name>.+)\z/
-    WEB_HOOK_URL = "https://hooks.slack.com/services/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"
-    CONSOLE   = true
-    END_POINT = false
-    LOGGING   = false
+
+    def initialize(options = {})
+      @options = options
+    end
 
     module PatchModule
-      def disp_console_by_okuribito(method_name, obj_name, caller_info)
-        return unless CONSOLE
-        puts "#############################################################"
-        puts "# #{obj_name} : #{method_name} is called."
-        puts "#############################################################"
-        puts caller_info
+      def disp_console_by_okuribito(method_name, obj_name, caller_info, type)
+        case type
+        when "plane"
+          puts "#{obj_name} : #{method_name} is called."
+        when "back_trace"
+          puts "#############################################################"
+          puts "# #{obj_name} : #{method_name} is called."
+          puts "#############################################################"
+          puts caller_info
+        end
       end
 
-      def notificate_end_point_by_okuribito(method_name, obj_name, caller_info)
-        return unless END_POINT
-        uri  = URI.parse(WEB_HOOK_URL)
+      def notificate_slack_by_okuribito(method_name, obj_name, caller_info, url)
+        uri  = URI.parse(url)
         params = { text: "#{obj_name}, #{method_name} : #{caller_info[0]}" }
         http = Net::HTTP.new(uri.host, uri.port)
         http.use_ssl = true
@@ -54,6 +57,8 @@ module Okuribito
     end
 
     def patch_okuribito(class_name, observe_methods)
+      options = @options # スコープを乗り越えるために使用.
+
       class_name.constantize.class_eval do
         instance_method_patch = Module.new.extend(PatchModule)
         class_method_patch    = Module.new.extend(PatchModule)
@@ -68,16 +73,16 @@ module Okuribito
             when INSTANCE_METHOD_SYMBOL
               instance_method_patch.module_eval do
                 define_okuribito_patch(method_name) do |obj_name, caller_info|
-                  disp_console_by_okuribito(method_name, obj_name, caller_info)
-                  notificate_end_point_by_okuribito(method_name, obj_name, caller_info)
+                  disp_console_by_okuribito(method_name, obj_name, caller_info, options[:console]) unless options[:console].nil?
+                  notificate_slack_by_okuribito(method_name, obj_name, caller_info, options[:slack]) unless options[:slack].nil?
                 end
               end
               instance_method_patched += 1
             when CLASS_METHOD_SYMBOL
               class_method_patch.module_eval do
                 define_okuribito_patch(method_name) do |obj_name, caller_info|
-                  disp_console_by_okuribito(method_name, obj_name, caller_info)
-                  notificate_end_point_by_okuribito(method_name, obj_name, caller_info)
+                  disp_console_by_okuribito(method_name, obj_name, caller_info, options[:console]) unless options[:console].nil?
+                  notificate_slack_by_okuribito(method_name, obj_name, caller_info, options[:slack]) unless options[:slack].nil?
                 end
               end
               class_method_patched += 1
