@@ -5,6 +5,7 @@ require "active_support/core_ext"
 require "net/http"
 require "uri"
 require "json"
+require "logger"
 
 module Okuribito
   class OkuribitoPatch
@@ -41,6 +42,11 @@ module Okuribito
         end
       end
 
+      def logging_by_okuribito(method_name, obj_name, caller_info, log_path)
+        log = Logger.new(log_path)
+        log.info("#{obj_name}, #{method_name} : #{caller_info[0]}")
+      end
+
       def define_okuribito_patch(method_name)
         define_method(method_name) do |*args|
           yield(self.to_s, caller) if block_given?
@@ -75,6 +81,7 @@ module Okuribito
                 define_okuribito_patch(method_name) do |obj_name, caller_info|
                   disp_console_by_okuribito(method_name, obj_name, caller_info, options[:console]) unless options[:console].nil?
                   notificate_slack_by_okuribito(method_name, obj_name, caller_info, options[:slack]) unless options[:slack].nil?
+                  logging_by_okuribito(method_name, obj_name, caller_info, options[:logging]) unless options[:logging].nil?
                 end
               end
               instance_method_patched += 1
@@ -83,6 +90,7 @@ module Okuribito
                 define_okuribito_patch(method_name) do |obj_name, caller_info|
                   disp_console_by_okuribito(method_name, obj_name, caller_info, options[:console]) unless options[:console].nil?
                   notificate_slack_by_okuribito(method_name, obj_name, caller_info, options[:slack]) unless options[:slack].nil?
+                  logging_by_okuribito(method_name, obj_name, caller_info, options[:logging]) unless options[:logging].nil?
                 end
               end
               class_method_patched += 1
