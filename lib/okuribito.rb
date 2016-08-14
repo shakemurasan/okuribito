@@ -32,7 +32,18 @@ module Okuribito
 
       def notificate_slack_by_okuribito(method_name, obj_name, caller_info, url)
         uri  = URI.parse(url)
-        params = { text: "#{obj_name}, #{method_name} : #{caller_info[0]}" }
+        params = {
+          text: "OKURIBITO detected a method call.",
+          username: "OKURIBITO",
+          icon_emoji: ":innocent:",
+          attachments: [{
+            fields: [{
+               title: "#{obj_name}::#{method_name}",
+               value: "#{caller_info[0]}",
+               short: false
+             }]
+          }]
+        }
         http = Net::HTTP.new(uri.host, uri.port)
         http.use_ssl = true
         http.start do
