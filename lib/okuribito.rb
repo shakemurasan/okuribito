@@ -69,8 +69,9 @@ module Okuribito
 
     def patch_okuribito(class_name, observe_methods)
       options = @options # スコープを乗り越えるために使用.
+      klass = class_name.constantize
 
-      class_name.constantize.class_eval do
+      klass.class_eval do
         instance_method_patch = Module.new.extend(PatchModule)
         class_method_patch    = Module.new.extend(PatchModule)
         instance_method_patched = 0
@@ -82,6 +83,7 @@ module Okuribito
 
           case symbol
             when INSTANCE_METHOD_SYMBOL
+              next unless klass.instance_methods.include?(method_name)
               instance_method_patch.module_eval do
                 define_okuribito_patch(method_name) do |obj_name, caller_info|
                   disp_console_by_okuribito(method_name, obj_name, caller_info, options[:console]) unless options[:console].nil?
@@ -91,6 +93,7 @@ module Okuribito
               end
               instance_method_patched += 1
             when CLASS_METHOD_SYMBOL
+              next unless klass.respond_to?(method_name)
               class_method_patch.module_eval do
                 define_okuribito_patch(method_name) do |obj_name, caller_info|
                   disp_console_by_okuribito(method_name, obj_name, caller_info, options[:console]) unless options[:console].nil?
