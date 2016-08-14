@@ -6,13 +6,15 @@ require 'okuribito/version'
 Gem::Specification.new do |spec|
   spec.name          = "okuribito"
   spec.version       = Okuribito::VERSION
-  spec.authors       = ["yasuhiro_matsumura"]
-  spec.email         = ["yasuhiro.matsumura@pixta.co.jp"]
+  spec.authors       = ["muramurasan"]
+  spec.email         = ["ym.works1985@gmail.com"]
 
-  spec.summary       = %q{TBD}
-  spec.description   = %q{TBD}
-  spec.homepage      = "https://github.com/muramurasan/"
+  spec.summary       = "Monitoring system of the method call"
+  spec.description   = "Okuribito monitors the method call by the yaml."
+  spec.homepage      = "https://github.com/muramurasan/okuribito"
   spec.license       = "MIT"
+
+  spec.required_ruby_version = '>= 2.0.0'
 
   # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'
   # to allow pushing to a single host or delete this section to allow pushing to any host.
@@ -27,9 +29,10 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
+  spec.add_dependency "activesupport", "~> 4.0"
+  spec.add_dependency "json", "~> 1.0"
+
   spec.add_development_dependency "bundler", "~> 1.12"
   spec.add_development_dependency "rake", "~> 10.0"
   spec.add_development_dependency "rspec", "~> 3.0"
-  spec.add_dependency "activesupport", "~> 4.0"
-  spec.add_dependency "json", "~> 1.0"
 end
