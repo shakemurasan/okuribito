@@ -42,9 +42,13 @@ module Okuribito
         end
       end
 
-      def logging_by_okuribito(method_name, obj_name, caller_info, log_path)
-        log = Logger.new(log_path)
-        log.info("#{obj_name}, #{method_name} : #{caller_info[0]}")
+      def logging_by_okuribito(symbol, method_name, obj_name, caller_info, log_path)
+        logger = Logger.new(log_path)
+        logger.formatter = proc{|severity, datetime, progname, message|
+          "#{datetime}, #{message}\n"
+        }
+
+        logger.info("#{obj_name}#{symbol}#{method_name} : #{caller_info[0]}")
       end
 
       def define_okuribito_patch(method_name)
@@ -59,6 +63,7 @@ module Okuribito
       yaml = YAML.load_file(yaml_path)
       yaml.each do |class_name, observe_methods|
         patch_okuribito(class_name, observe_methods)
+        logging_prepended(class_name, observe_methods, @options[:first_prepended]) unless @options[:first_prepended].nil?
       end
     end
 
@@ -81,7 +86,7 @@ module Okuribito
                 define_okuribito_patch(method_name) do |obj_name, caller_info|
                   disp_console_by_okuribito(method_name, obj_name, caller_info, options[:console]) unless options[:console].nil?
                   notificate_slack_by_okuribito(method_name, obj_name, caller_info, options[:slack]) unless options[:slack].nil?
-                  logging_by_okuribito(method_name, obj_name, caller_info, options[:logging]) unless options[:logging].nil?
+                  logging_by_okuribito(symbol, method_name, obj_name, caller_info, options[:logging]) unless options[:logging].nil?
                 end
               end
               instance_method_patched += 1
@@ -99,6 +104,27 @@ module Okuribito
         prepend instance_method_patch if instance_method_patched > 0
         singleton_class.prepend class_method_patch if class_method_patched > 0
       end
+    end
+
+    def logging_prepended(class_name, observe_methods, log_path)
+      # ファイル読み出して、クラス名+メソッド名だけを配列に保持する.
+      methods = []
+      if File.exist?(log_path)
+        File.open(log_path) { |f| methods = f.read.split("\n") }
+        methods.slice!(0)
+        methods.map! { |m| m.split(",")[1] }
+      end
+
+      logger = Logger.new(log_path)
+      logger.formatter = proc{|severity, datetime, progname, message|
+        "#{datetime},#{message}\n"
+      }
+
+      observe_methods.each do |observe_method|
+        method_full_name = "#{class_name}#{observe_method}"
+        logger.info(method_full_name) unless methods.include?(method_full_name)
+      end
+
     end
   end
 end
