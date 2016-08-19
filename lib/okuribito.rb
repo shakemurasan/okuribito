@@ -116,7 +116,7 @@ module Okuribito
           end
         end
         prepend instance_method_patch if instance_method_patched > 0
-        singleton_class.prepend class_method_patch if class_method_patched > 0
+        singleton_class.send(:prepend, class_method_patch) if class_method_patched > 0
       end
     end
 
