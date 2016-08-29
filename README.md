@@ -25,16 +25,16 @@ Or install it yourself as:
 
 Add `config/okuribito.yml` and edit it.
 
-```config/okuribito.yml
+```yml:config/okuribito.yml
 User:
   - '#feed'
 Micropost:
-- '.from_users_followed_by'
+  - '.from_users_followed_by'
 ```
 
 Edit `application.rb`
 
-```application.rb
+```ruby:application.rb
 class OkuribitoSetting < Rails::Railtie
   config.after_initialize do
     okuribito = Okuribito::OkuribitoPatch.new(
