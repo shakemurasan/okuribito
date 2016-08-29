@@ -1,5 +1,7 @@
 # Okuribito
 
+![okuribito](okuribito_logo.png)
+
 Okuribito is a gem to judge whether methods should be sent to the heaven :innocent:.
 Okuribito was named after a japanese movie.
 
