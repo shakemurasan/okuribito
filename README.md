@@ -1,8 +1,7 @@
 # Okuribito
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/okuribito`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+Okuribito is a gem to judge whether methods should be sent to the heaven :innocent:.
+Okuribito was named after a japanese movie.
 
 ## Installation
 
@@ -22,7 +21,46 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+Add `config/okuribito.yml` and edit it.
+
+```config/okuribito.yml
+User:
+  - '#feed'
+Micropost:
+- '.from_users_followed_by'
+```
+
+Edit `application.rb`
+
+```application.rb
+class OkuribitoSetting < Rails::Railtie
+  config.after_initialize do
+    okuribito = Okuribito::OkuribitoPatch.new(
+      {
+        console: "back_trace",
+        slack: "https://hooks.slack.com/services/xxxxxxxxx/xxxxxxxxxx/xxxxxxxxxxxxxxxxxxxxxxxx",
+        logging: "log/okuribito/method_called.log",
+        first_prepended: "log/okuribito/first_prepended.log"
+      }
+    )
+    okuribito.apply("okuribito.yml")
+  end
+end
+```
+
+### console
+Setting for console outout.
+- `plain` is the simplest 1 line log.
+- `back_trace` is
+
+### slack
+Setting for slack notification.
+
+### logging
+Setting for logging.
+
+### first_prepended
+Setting for logging to save when you started to monitor.
 
 ## Development
 
