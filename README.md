@@ -25,7 +25,7 @@ Or install it yourself as:
 
 Add `config/okuribito.yml` and edit it.
 
-```yml:config/okuribito.yml
+```yml
 User:
   - '#feed'
 Micropost:
@@ -34,7 +34,7 @@ Micropost:
 
 Edit `application.rb`
 
-```ruby:application.rb
+```ruby
 class OkuribitoSetting < Rails::Railtie
   config.after_initialize do
     okuribito = Okuribito::OkuribitoPatch.new(
