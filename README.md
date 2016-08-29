@@ -53,7 +53,7 @@ end
 ### console
 Setting for console outout.
 - `plain` is the simplest 1 line log.
-- `back_trace` is
+- `back_trace` shows back trace in detail.
 
 ### slack
 Setting for slack notification.
