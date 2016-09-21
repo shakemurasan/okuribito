@@ -109,14 +109,14 @@ module Okuribito
                 define_okuribito_patch(method_name) do |obj_name, caller_info|
                   disp_console_by_okuribito(method_name, obj_name, caller_info, options[:console]) unless options[:console].nil?
                   notificate_slack_by_okuribito(method_name, obj_name, caller_info, options[:slack]) unless options[:slack].nil?
-                  logging_by_okuribito(method_name, obj_name, caller_info, options[:logging]) unless options[:logging].nil?
+                  logging_by_okuribito(symbol, method_name, obj_name, caller_info, options[:logging]) unless options[:logging].nil?
                 end
               end
               class_method_patched += 1
           end
         end
         prepend instance_method_patch if instance_method_patched > 0
-        singleton_class.prepend class_method_patch if class_method_patched > 0
+        singleton_class.send(:prepend, class_method_patch) if class_method_patched > 0
       end
     end
 
