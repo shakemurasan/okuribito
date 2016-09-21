@@ -1,0 +1,4 @@
+TargetClass:
+  - "#self_unused_method"
+  - ".unused_instance_method"
+
