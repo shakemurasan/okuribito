@@ -1,0 +1,4 @@
+TestTarget:
+  - ".deprecated_self_method"
+  - "#deprecated_method"
+
