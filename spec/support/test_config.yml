@@ -1,4 +1,4 @@
 TestTarget:
-  - ".unused_self_method"
-  - "#unused_method"
+  - ".deprecated_self_method"
+  - "#deprecated_method"
 
