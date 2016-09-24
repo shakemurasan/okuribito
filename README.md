@@ -68,6 +68,7 @@ TestTarget.deprecated_self_method
 TestTarget.new.deprecated_method
 ```
 
+Setting file:
 
 ```okuribito.yml
 TestTarget:
@@ -76,20 +77,14 @@ TestTarget:
 
 ```
 
+Output:
+
 ```output
 TestTarget deprecated_self_method example.rb:17:in `<main>'
 #<TestTarget:0x007fd1e11ce368> deprecated_method example.rb:18:in `<main>'
 ```
 
-## Call back examples
-
-### The simplest single log to stdout 
-
-```ruby
-okuribito = Okuribito::OkuribitoPatch.new do |method_name, obj_name, caller_info|
-  puts "#{obj_name} #{method_name} #{caller_info[0]}"
-end
-```
+## Callback examples
 
 ### Full stacktrace
 
@@ -130,7 +125,7 @@ end
 ```
 
 ### Other ideas
-- send to Fluentd, TreasureData
+- Send to Fluentd, TreasureData
 
 ## Development
 
