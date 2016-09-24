@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class TestTarget
   def self.deprecated_self_method
   end
