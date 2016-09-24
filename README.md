@@ -37,32 +37,100 @@ Edit `application.rb`
 ```ruby
 class OkuribitoSetting < Rails::Railtie
   config.after_initialize do
-    okuribito = Okuribito::OkuribitoPatch.new(
-      {
-        console: "back_trace",
-        slack: "https://hooks.slack.com/services/xxxxxxxxx/xxxxxxxxxx/xxxxxxxxxxxxxxxxxxxxxxxx",
-        logging: "log/okuribito/method_called.log",
-        first_prepended: "log/okuribito/first_prepended.log"
-      }
-    )
+    okuribito = Okuribito::OkuribitoPatch.new do |method_name, obj_name, caller_info|
+      # TODO: do something as you like!
+    end
     okuribito.apply("okuribito.yml")
   end
 end
 ```
 
-### console
-Setting for console outout.
-- `plain` is the simplest 1 line log.
-- `back_trace` shows back trace in detail.
+## The smallest example
 
-### slack
-Setting for slack notification.
+```ruby
+require "bundler/setup"
+require "okuribito"
 
-### logging
-Setting for logging.
+class TestTarget
+  def self.deprecated_self_method
+  end
 
-### first_prepended
-Setting for logging to save when you started to monitor.
+  def deprecated_method
+  end
+end
+
+okuribito = Okuribito::OkuribitoPatch.new do |method_name, obj_name, caller_info|
+  puts "#{obj_name} #{method_name} #{caller_info[0]}"
+end
+okuribito.apply("okuribito.yml")
+
+TestTarget.deprecated_self_method
+TestTarget.new.deprecated_method
+```
+
+
+```okuribito.yml
+TestTarget:
+  - ".deprecated_self_method"
+  - "#deprecated_method"
+
+```
+
+```output
+TestTarget deprecated_self_method example.rb:17:in `<main>'
+#<TestTarget:0x007fd1e11ce368> deprecated_method example.rb:18:in `<main>'
+```
+
+## Call back examples
+
+### The simplest single log to stdout 
+
+```ruby
+okuribito = Okuribito::OkuribitoPatch.new do |method_name, obj_name, caller_info|
+  puts "#{obj_name} #{method_name} #{caller_info[0]}"
+end
+```
+
+### Full stacktrace
+
+```ruby
+okuribito = Okuribito::OkuribitoPatch.new do |method_name, obj_name, caller_info|
+  puts "#############################################################"
+  puts "#{obj_name} #{method_name} #{caller_info[0]}"
+  puts "#############################################################"
+  puts caller_info
+end
+```
+
+### Send to slack
+
+```ruby
+okuribito = Okuribito::OkuribitoPatch.new do |method_name, obj_name, caller_info|
+  uri = URI.parse("https://hooks.slack.com/services/xxx...")
+  params = {
+      text: "OKURIBITO detected a method call.",
+      username: "OKURIBITO",
+      icon_emoji: ":innocent:",
+      attachments: [{
+                        fields: [{
+                                     title: "#{obj_name}::#{method_name}",
+                                     value: "#{caller_info[0]}",
+                                     short: false
+                                 }]
+                    }]
+  }
+  http = Net::HTTP.new(uri.host, uri.port)
+  http.use_ssl = true
+  http.start do
+    request = Net::HTTP::Post.new(uri.path)
+    request.set_form_data(payload: params.to_json)
+    http.request(request)
+  end
+end
+```
+
+### Other ideas
+- send to Fluentd, TreasureData
 
 ## Development
 
