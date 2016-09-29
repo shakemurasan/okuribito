@@ -27,31 +27,35 @@ Add `config/okuribito.yml` and edit it.
 
 ```yml
 User:
-  - '#feed'
+  - '#feed' # class_method
 Micropost:
-  - '.from_users_followed_by'
+  - '.from_users_followed_by' # instance_method
 ```
 
 Edit `application.rb`
 
 ```ruby
-class OkuribitoSetting < Rails::Railtie
-  config.after_initialize do
-    okuribito = Okuribito::OkuribitoPatch.new(
-      {
-        console: "back_trace",
-        slack: "https://hooks.slack.com/services/xxxxxxxxx/xxxxxxxxxx/xxxxxxxxxxxxxxxxxxxxxxxx",
-        logging: "log/okuribito/method_called.log",
-        first_prepended: "log/okuribito/first_prepended.log"
-      }
-    )
-    okuribito.apply("okuribito.yml")
+module YourProjectName
+  ...
+  class OkuribitoSetting < Rails::Railtie
+    config.after_initialize do
+      okuribito = Okuribito::OkuribitoPatch.new(
+        {
+          console: "back_trace",
+          slack: "https://hooks.slack.com/services/xxxxxxxxx/xxxxxxxxxx/xxxxxxxxxxxxxxxxxxxxxxxx",
+          # Need create log/okuribito directory
+          logging: "log/okuribito/method_called.log",
+          first_prepended: "log/okuribito/first_prepended.log"
+        }
+      )
+      okuribito.apply("config/okuribito.yml")
+    end
   end
 end
 ```
 
 ### console
-Setting for console outout.
+Setting for console output.
 - `plain` is the simplest 1 line log.
 - `back_trace` shows back trace in detail.
 
