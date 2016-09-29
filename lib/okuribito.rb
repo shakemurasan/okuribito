@@ -20,7 +20,7 @@ module Okuribito
     module PatchModule
       def disp_console_by_okuribito(method_name, obj_name, caller_info, type)
         case type
-        when "plane"
+        when "plain"
           puts "#{obj_name} : #{method_name} is called."
         when "back_trace"
           puts "#############################################################"
