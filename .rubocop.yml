@@ -1,0 +1,15 @@
+AllCops:
+  Exclude:
+    - 'okuribito.gemspec'
+    - 'spec/spec_helper.rb'
+
+Documentation:
+  Enabled: false
+
+LineLength:
+  Max: 100
+
+Style/StringLiterals:
+  EnforcedStyle: double_quotes
+  SupportedStyles:
+    - double_quotes
