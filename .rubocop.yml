@@ -2,7 +2,6 @@ AllCops:
   Exclude:
     - 'okuribito.gemspec'
     - 'spec/spec_helper.rb'
-    - 'spec/support/**/*'
 
 Documentation:
   Enabled: false
