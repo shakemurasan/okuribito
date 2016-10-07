@@ -1,3 +1,5 @@
+[![CircleCI](https://circleci.com/gh/muramurasan/okuribito/tree/master.svg?style=svg)](https://circleci.com/gh/muramurasan/okuribito/tree/master)
+
 # Okuribito
 
 ![okuribito](okuribito_logo.png)
