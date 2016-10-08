@@ -5,6 +5,7 @@
 ![okuribito](okuribito_logo.png)
 
 Okuribito is a gem to judge whether methods should be sent to the heaven :innocent:.
+In other words, it can be used in order to extract the obsolete method.
 Okuribito was named after a japanese movie.
 
 ## Installation
@@ -127,7 +128,7 @@ end
 okuribito = Okuribito::OkuribitoPatch.new do |method_name, obj_name, caller_info|
   uri = URI.parse("https://hooks.slack.com/services/xxx...")
   params = {
-      text: "OKURIBITO detected a method call.",
+      text: "OKURIBITO detect a method call.",
       username: "OKURIBITO",
       icon_emoji: ":innocent:",
       attachments: [{
@@ -149,7 +150,7 @@ end
 ```
 
 ### Other ideas
-- Send to Fluentd, TreasureData
+- Send to Fluentd, TreasureData, Slack...
 
 ## License
 
