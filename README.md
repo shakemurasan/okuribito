@@ -2,10 +2,14 @@
 
 # Okuribito
 
+https://rubygems.org/gems/okuribito
+
 ![okuribito](okuribito_logo.png)
 
 Okuribito is a gem to judge whether methods should be sent to the heaven :innocent:.
+
 In other words, it can be used in order to extract the obsolete method.
+
 Okuribito was named after a japanese movie.
 
 ## Installation
