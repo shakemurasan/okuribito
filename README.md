@@ -38,8 +38,9 @@ By writing the following code to start the monitoring of the method.
 
 ```ruby
 okuribito = Okuribito::OkuribitoPatch.new do |method_name, obj_name, caller_info|
-# TODO: do something as you like!
+  # TODO: do something as you like!
 end
+okuribito.apply("okuribito.yml")
 ```
 
 You can also give the option.
@@ -50,6 +51,7 @@ You can also give the option.
 okuribito = Okuribito::OkuribitoPatch.new(once_detect: true) do |method_name, obj_name, caller_info|
   # TODO: do something as you like!
 end
+okuribito.apply("okuribito.yml")
 ```
 
 ### ex: Ruby On Rails
