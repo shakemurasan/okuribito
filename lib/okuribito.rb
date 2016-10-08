@@ -16,7 +16,7 @@ module Okuribito
     module PatchModule
       def define_okuribito_patch(method_name)
         define_method(method_name) do |*args|
-          yield(self.to_s, caller) if block_given?
+          yield(to_s, caller) if block_given?
           super(*args)
         end
       end
@@ -30,7 +30,7 @@ module Okuribito
     end
 
     def patch_okuribito(class_name, observe_methods)
-      callback = @callback # スコープを乗り越えるために使用.
+      callback = @callback
       klass = class_name.constantize
 
       klass.class_eval do
@@ -41,25 +41,26 @@ module Okuribito
 
         observe_methods.each do |observe_method|
           next unless md = PATTERN.match(observe_method)
-          symbol, method_name = md[:symbol], md[:method_name].to_sym
+          symbol = md[:symbol]
+          method_name = md[:method_name].to_sym
 
           case symbol
-            when INSTANCE_METHOD_SYMBOL
-              next unless klass.instance_methods.include?(method_name)
-              instance_method_patch.module_eval do
-                define_okuribito_patch(method_name) do |obj_name, caller_info|
-                  callback.call(method_name, obj_name, caller_info)
-                end
+          when INSTANCE_METHOD_SYMBOL
+            next unless klass.instance_methods.include?(method_name)
+            instance_method_patch.module_eval do
+              define_okuribito_patch(method_name) do |obj_name, caller_info|
+                callback.call(method_name, obj_name, caller_info)
               end
-              instance_method_patched += 1
-            when CLASS_METHOD_SYMBOL
-              next unless klass.respond_to?(method_name)
-              class_method_patch.module_eval do
-                define_okuribito_patch(method_name) do |obj_name, caller_info|
-                  callback.call(method_name, obj_name, caller_info)
-                end
+            end
+            instance_method_patched += 1
+          when CLASS_METHOD_SYMBOL
+            next unless klass.respond_to?(method_name)
+            class_method_patch.module_eval do
+              define_okuribito_patch(method_name) do |obj_name, caller_info|
+                callback.call(method_name, obj_name, caller_info)
               end
-              class_method_patched += 1
+            end
+            class_method_patched += 1
           end
         end
         prepend instance_method_patch if instance_method_patched > 0

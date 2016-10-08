@@ -13,3 +13,12 @@ Style/StringLiterals:
   EnforcedStyle: double_quotes
   SupportedStyles:
     - double_quotes
+
+Metrics/CyclomaticComplexity:
+  Max: 10
+
+Metrics/MethodLength:
+  Max: 20
+
+Metrics/AbcSize:
+  Max: 30
