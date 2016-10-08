@@ -126,33 +126,6 @@ okuribito = Okuribito::OkuribitoPatch.new do |method_name, obj_name, caller_info
 end
 ```
 
-### Send to slack
-
-```ruby
-okuribito = Okuribito::OkuribitoPatch.new do |method_name, obj_name, caller_info|
-  uri = URI.parse("https://hooks.slack.com/services/xxx...")
-  params = {
-      text: "OKURIBITO detect a method call.",
-      username: "OKURIBITO",
-      icon_emoji: ":innocent:",
-      attachments: [{
-                        fields: [{
-                                     title: "#{obj_name}::#{method_name}",
-                                     value: "#{caller_info[0]}",
-                                     short: false
-                                 }]
-                    }]
-  }
-  http = Net::HTTP.new(uri.host, uri.port)
-  http.use_ssl = true
-  http.start do
-    request = Net::HTTP::Post.new(uri.path)
-    request.set_form_data(payload: params.to_json)
-    http.request(request)
-  end
-end
-```
-
 ### Other ideas
 - Send to Fluentd, TreasureData, Slack...
 
