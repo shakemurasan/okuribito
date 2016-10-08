@@ -15,8 +15,12 @@ module Okuribito
 
     module PatchModule
       def define_okuribito_patch(method_name)
+        instance_variable_set("@#{method_name}_called", false)
         define_method(method_name) do |*args|
-          yield(to_s, caller) if block_given?
+          if block_given? && !instance_variable_get("@#{method_name}_called")
+            yield(to_s, caller)
+            instance_variable_set("@#{method_name}_called", true)
+          end
           super(*args)
         end
       end

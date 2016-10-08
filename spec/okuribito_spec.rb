@@ -15,23 +15,43 @@ describe Okuribito do
     okuribito.apply(setting_path)
   end
 
-  subject { output.string.chomp }
+  describe "#define_okuribito_patch" do
+    subject { output.string.chomp }
 
-  context "when target class method called" do
-    before do
-      TestTarget.deprecated_self_method
+    context "when target class method called" do
+      before do
+        TestTarget.deprecated_self_method
+      end
+
+      it { is_expected.to eq "TestTarget deprecated_self_method #{dummy_caller[0]}" }
     end
 
-    subject { output.string.chomp }
-    it { is_expected.to eq "TestTarget deprecated_self_method #{dummy_caller[0]}" }
-  end
+    context "when target class method called twice" do
+      before do
+        TestTarget.deprecated_self_method
+        TestTarget.deprecated_self_method
+      end
 
-  context "when target instance method called" do
-    before do
-      TestTarget.new.deprecated_method
+      it { is_expected.to eq "TestTarget deprecated_self_method #{dummy_caller[0]}" }
     end
 
-    subject { output.string.chomp }
-    it { is_expected.to match "#<TestTarget:0x[0-9a-f]+> deprecated_method #{dummy_caller[0]}" }
+    context "when target instance method called" do
+      before do
+        TestTarget.new.deprecated_method
+      end
+
+      it { is_expected.to match "#<TestTarget:0x[0-9a-f]+> deprecated_method #{dummy_caller[0]}" }
+    end
+
+    context "when target instance method called twice" do
+      let(:test_target) { TestTarget.new }
+
+      before do
+        test_target.deprecated_method
+        test_target.deprecated_method
+      end
+
+      it { is_expected.to match "#<TestTarget:0x[0-9a-f]+> deprecated_method #{dummy_caller[0]}" }
+    end
   end
 end
