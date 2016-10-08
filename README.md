@@ -34,6 +34,26 @@ Micropost:
   - '.from_users_followed_by'
 ```
 
+By writing the following code to start the monitoring of the method.
+
+```ruby
+okuribito = Okuribito::OkuribitoPatch.new do |method_name, obj_name, caller_info|
+# TODO: do something as you like!
+end
+```
+
+You can also give the option.
+
+`once_detect`: When it detects a method call, and run only once the code that has been set.
+
+```ruby
+okuribito = Okuribito::OkuribitoPatch.new(once_detect: true) do |method_name, obj_name, caller_info|
+  # TODO: do something as you like!
+end
+```
+
+### ex: Ruby On Rails
+
 Edit `application.rb`
 
 ```ruby
