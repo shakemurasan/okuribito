@@ -57,6 +57,7 @@ describe Okuribito do
       before do
         test_target.deprecated_method
         test_target.deprecated_method
+        TestTarget.new.deprecated_method
       end
 
       context "(no option)" do
