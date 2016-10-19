@@ -15,7 +15,7 @@ module Okuribito
     end
 
     module SimplePatchModule
-      def define_okuribito_patch(method_name, _opt = {})
+      def define_okuribito_patch(_klass, _id, method_name, _opt = {})
         define_method(method_name) do |*args|
           yield(to_s, caller) if block_given?
           super(*args)
@@ -24,12 +24,12 @@ module Okuribito
     end
 
     module FunctionalPatchModule
-      def define_okuribito_patch(method_name, opt = {})
-        instance_variable_set("@#{method_name}_called", false)
+      def define_okuribito_patch(klass, id, method_name, opt = {})
+        klass.instance_variable_set("@#{method_name}_#{id}_called", false)
         define_method(method_name) do |*args|
-          if block_given? && !instance_variable_get("@#{method_name}_called")
+          if block_given? && !klass.instance_variable_get("@#{method_name}_#{id}_called")
             yield(to_s, caller)
-            instance_variable_set("@#{method_name}_called", true) if opt[:once_detect]
+            klass.instance_variable_set("@#{method_name}_#{id}_called", true) if opt[:once_detect]
           end
           super(*args)
         end
@@ -68,7 +68,7 @@ module Okuribito
           when INSTANCE_METHOD_SYMBOL
             next unless klass.instance_methods.include?(method_name)
             instance_method_patch.module_eval do
-              define_okuribito_patch(method_name, opt) do |obj_name, caller_info|
+              define_okuribito_patch(klass, "i", method_name, opt) do |obj_name, caller_info|
                 callback.call(method_name, obj_name, caller_info)
               end
             end
@@ -76,7 +76,7 @@ module Okuribito
           when CLASS_METHOD_SYMBOL
             next unless klass.respond_to?(method_name)
             class_method_patch.module_eval do
-              define_okuribito_patch(method_name, opt) do |obj_name, caller_info|
+              define_okuribito_patch(klass, "c", method_name, opt) do |obj_name, caller_info|
                 callback.call(method_name, obj_name, caller_info)
               end
             end
