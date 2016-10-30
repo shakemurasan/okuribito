@@ -81,7 +81,7 @@ module Okuribito
             next unless klass.instance_methods.include?(method_name)
             i_method_patch.module_eval do
               define_patch(method_name, i_method_patch, "i", opt) do |obj_name, caller_info|
-                callback.call(method_name, obj_name, caller_info)
+                callback.call(method_name, obj_name, caller_info, class_name, INSTANCE_METHOD_SYMBOL)
               end
             end
             i_method_patched += 1
@@ -89,7 +89,7 @@ module Okuribito
             next unless klass.respond_to?(method_name)
             c_method_patch.module_eval do
               define_patch(method_name, c_method_patch, "c", opt) do |obj_name, caller_info|
-                callback.call(method_name, obj_name, caller_info)
+                callback.call(method_name, obj_name, caller_info, class_name, CLASS_METHOD_SYMBOL)
               end
             end
             c_method_patched += 1
