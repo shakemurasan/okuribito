@@ -45,7 +45,7 @@ By writing the following code to start the monitoring of the method.
 okuribito = Okuribito::OkuribitoPatch.new do |method_name, obj_name, caller_info|
   # TODO: do something as you like!
 end
-okuribito.apply("okuribito.yml")
+okuribito.apply("config/okuribito.yml")
 ```
 
 You can also give the option.
@@ -56,7 +56,7 @@ You can also give the option.
 okuribito = Okuribito::OkuribitoPatch.new(once_detect: true) do |method_name, obj_name, caller_info|
   # TODO: do something as you like!
 end
-okuribito.apply("okuribito.yml")
+okuribito.apply("config/okuribito.yml")
 ```
 
 ### ex: Ruby On Rails
@@ -69,7 +69,7 @@ class OkuribitoSetting < Rails::Railtie
     okuribito = Okuribito::OkuribitoPatch.new do |method_name, obj_name, caller_info|
       # TODO: do something as you like!
     end
-    okuribito.apply("okuribito.yml")
+    okuribito.apply("config/okuribito.yml")
   end
 end
 ```
@@ -91,7 +91,7 @@ end
 okuribito = Okuribito::OkuribitoPatch.new do |method_name, obj_name, caller_info|
   puts "#{obj_name} #{method_name} #{caller_info[0]}"
 end
-okuribito.apply("okuribito.yml")
+okuribito.apply("config/okuribito.yml")
 
 TestTarget.deprecated_self_method
 TestTarget.new.deprecated_method
@@ -124,6 +124,7 @@ okuribito = Okuribito::OkuribitoPatch.new do |method_name, obj_name, caller_info
   puts "#############################################################"
   puts caller_info
 end
+okuribito.apply("config/okuribito.yml")
 ```
 
 ### Other ideas
