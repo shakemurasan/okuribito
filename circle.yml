@@ -1,2 +1,9 @@
 machine:
   timezone: Asia/Tokyo
+  ruby:
+    version:
+      2.2.2
+dependencies:
+  override:
+    - bundle install:
+        timeout: 180
