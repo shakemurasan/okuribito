@@ -1,4 +1,5 @@
 [![CircleCI](https://circleci.com/gh/muramurasan/okuribito/tree/master.svg?style=svg)](https://circleci.com/gh/muramurasan/okuribito/tree/master)
+[![Code Climate](https://codeclimate.com/github/muramurasan/okuribito.png)](https://codeclimate.com/github/muramurasan/okuribito)
 
 # Okuribito
 
@@ -43,7 +44,7 @@ By writing the following code to start the monitoring of the method.
 
 ```ruby
 okuribito = Okuribito::OkuribitoPatch.new do |method_name, obj_name, caller_info|
-  # TODO: do something as you like!
+  # do something as you like!
 end
 okuribito.apply("config/okuribito.yml")
 ```
@@ -54,7 +55,7 @@ You can also give the option.
 
 ```ruby
 okuribito = Okuribito::OkuribitoPatch.new(once_detect: true) do |method_name, obj_name, caller_info|
-  # TODO: do something as you like!
+  # do something as you like!
 end
 okuribito.apply("config/okuribito.yml")
 ```
@@ -67,7 +68,7 @@ Edit `application.rb`
 class OkuribitoSetting < Rails::Railtie
   config.after_initialize do
     okuribito = Okuribito::OkuribitoPatch.new do |method_name, obj_name, caller_info|
-      # TODO: do something as you like!
+      # do something as you like!
     end
     okuribito.apply("config/okuribito.yml")
   end
