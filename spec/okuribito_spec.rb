@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 require "spec_helper"
 require "support/test_target"
+require "okuribito"
 
 describe Okuribito do
   let(:setting_path) { "spec/support/test_config.yml" }
