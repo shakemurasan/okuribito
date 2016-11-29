@@ -44,6 +44,8 @@ module Okuribito
     end
 
     def patch_okuribito(class_name, observe_methods)
+      return unless Object.const_defined?(class_name) && Object.const_get(class_name).is_a?(Class)
+
       callback = @callback
       opt ||= @opt
       klass = class_name.constantize
@@ -52,13 +54,13 @@ module Okuribito
         if opt.present?
           i_patch_name = "#{class_name}InstancePatch"
           c_patch_name = "#{class_name}ClassPatch"
-          if FunctionalPatchModule.const_defined?(i_patch_name.to_sym)
+          if FunctionalPatchModule.const_defined?(i_patch_name)
             i_method_patch = Module.new.extend(FunctionalPatchModule)
           else
             i_method_patch = FunctionalPatchModule
                              .const_set(i_patch_name, Module.new.extend(FunctionalPatchModule))
           end
-          if FunctionalPatchModule.const_defined?(c_patch_name.to_sym)
+          if FunctionalPatchModule.const_defined?(c_patch_name)
             c_method_patch = Module.new.extend(FunctionalPatchModule)
           else
             c_method_patch = FunctionalPatchModule
