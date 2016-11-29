@@ -43,6 +43,18 @@ module Okuribito
       end
     end
 
+    def self.module(opt, patch_name)
+      if opt.present?
+        if FunctionalPatchModule.const_defined?(patch_name)
+          Module.new.extend(FunctionalPatchModule)
+        else
+          FunctionalPatchModule.const_set(patch_name, Module.new.extend(FunctionalPatchModule))
+        end
+      else
+        Module.new.extend(SimplePatchModule)
+      end
+    end
+
     def patch_okuribito(class_name, observe_methods)
       return unless Object.const_defined?(class_name) && Object.const_get(class_name).is_a?(Class)
 
@@ -51,30 +63,13 @@ module Okuribito
       klass = class_name.constantize
 
       klass.class_eval do
-        if opt.present?
-          i_patch_name = "#{class_name}InstancePatch"
-          c_patch_name = "#{class_name}ClassPatch"
-          if FunctionalPatchModule.const_defined?(i_patch_name)
-            i_method_patch = Module.new.extend(FunctionalPatchModule)
-          else
-            i_method_patch = FunctionalPatchModule
-                             .const_set(i_patch_name, Module.new.extend(FunctionalPatchModule))
-          end
-          if FunctionalPatchModule.const_defined?(c_patch_name)
-            c_method_patch = Module.new.extend(FunctionalPatchModule)
-          else
-            c_method_patch = FunctionalPatchModule
-                             .const_set(c_patch_name, Module.new.extend(FunctionalPatchModule))
-          end
-        else
-          i_method_patch = Module.new.extend(SimplePatchModule)
-          c_method_patch = Module.new.extend(SimplePatchModule)
-        end
+        i_method_patch = Okuribito::OkuribitoPatch.module(opt, "#{class_name}InstancePatch")
+        c_method_patch = Okuribito::OkuribitoPatch.module(opt, "#{class_name}ClassPatch")
         i_method_patched = 0
         c_method_patched = 0
 
         observe_methods.each do |observe_method|
-          next unless md = PATTERN.match(observe_method)
+          next unless (md = PATTERN.match(observe_method))
           symbol = md[:symbol]
           method_name = md[:method_name].to_sym
 
@@ -83,7 +78,7 @@ module Okuribito
             next unless klass.instance_methods.include?(method_name)
             i_method_patch.module_eval do
               define_patch(method_name, i_method_patch, "i", opt) do |obj_name, caller_info|
-                callback.call(method_name, obj_name, caller_info, class_name, INSTANCE_METHOD_SYMBOL)
+                callback.call(method_name, obj_name, caller_info, class_name, symbol)
               end
             end
             i_method_patched += 1
@@ -91,7 +86,7 @@ module Okuribito
             next unless klass.respond_to?(method_name)
             c_method_patch.module_eval do
               define_patch(method_name, c_method_patch, "c", opt) do |obj_name, caller_info|
-                callback.call(method_name, obj_name, caller_info, class_name, CLASS_METHOD_SYMBOL)
+                callback.call(method_name, obj_name, caller_info, class_name, symbol)
               end
             end
             c_method_patched += 1
