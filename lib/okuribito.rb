@@ -61,13 +61,12 @@ module Okuribito
       callback = @callback
       opt ||= @opt
       klass = class_name.constantize
+      i_method_patch = Okuribito::OkuribitoPatch.module(opt, "#{class_name}InstancePatch")
+      c_method_patch = Okuribito::OkuribitoPatch.module(opt, "#{class_name}ClassPatch")
+      i_method_patched = 0
+      c_method_patched = 0
 
       klass.class_eval do
-        i_method_patch = Okuribito::OkuribitoPatch.module(opt, "#{class_name}InstancePatch")
-        c_method_patch = Okuribito::OkuribitoPatch.module(opt, "#{class_name}ClassPatch")
-        i_method_patched = 0
-        c_method_patched = 0
-
         observe_methods.each do |observe_method|
           next unless (md = PATTERN.match(observe_method))
           symbol = md[:symbol]

@@ -1,6 +1,0 @@
-engines:
-  rubocop:
-    enabled: true
-ratings:
-  paths:
-  - "**.rb"
