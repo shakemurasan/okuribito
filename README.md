@@ -1,5 +1,6 @@
 [![CircleCI](https://circleci.com/gh/muramurasan/okuribito/tree/master.svg?style=svg)](https://circleci.com/gh/muramurasan/okuribito/tree/master)
 [![Code Climate](https://codeclimate.com/github/muramurasan/okuribito.png)](https://codeclimate.com/github/muramurasan/okuribito)
+[![Test Coverage](https://codeclimate.com/github/muramurasan/okuribito/badges/coverage.svg)](https://codeclimate.com/github/muramurasan/okuribito/coverage)
 
 # Okuribito
 

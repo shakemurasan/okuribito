@@ -10,9 +10,4 @@ SimpleCov.coverage_dir(dir)
 SimpleCov.start do
   add_filter "/vendor/"
   add_filter "/spec/"
-
-  formatter SimpleCov::Formatter::MultiFormatter[
-              SimpleCov::Formatter::HTMLFormatter,
-              CodeClimate::TestReporter::Formatter
-            ]
 end
