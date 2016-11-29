@@ -2,7 +2,6 @@
 $LOAD_PATH.unshift File.expand_path("../../lib", __FILE__)
 
 require "simplecov"
-require "codeclimate-test-reporter"
 
 dir = File.join(ENV['CIRCLE_ARTIFACTS'] || "build", "coverage")
 SimpleCov.coverage_dir(dir)
