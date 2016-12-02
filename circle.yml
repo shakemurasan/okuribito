@@ -3,7 +3,7 @@ machine:
   ruby:
     version:
       2.2.2
-dependencies:
+test:
   override:
-    - bundle install:
-        timeout: 180
+    - bundle exec rspec
+    - bundle exec codeclimate-test-reporter
