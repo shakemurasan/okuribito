@@ -9,7 +9,7 @@ describe Okuribito do
   let(:output) { StringIO.new }
   let(:option) { {} }
 
-  xdescribe "simple version" do
+  describe "simple version" do
     before do
       allow_any_instance_of(Kernel).to receive(:caller).and_return(dummy_caller)
       okuribito = Okuribito::OkuribitoPatch.new(option) do |method_name, obj_name, caller_info|
