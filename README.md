@@ -10,7 +10,9 @@ https://rubygems.org/gems/okuribito
 
 Okuribito is a gem to judge whether methods should be sent to the heaven :innocent:.
 
-In other words, it can be used in order to extract the obsolete method.
+Okuribito monitors the method call with YAML, and exec specified code.
+
+In other words, it can be used in order to extract the uncalled method.
 
 Okuribito was named after a japanese movie.
 
@@ -135,4 +137,4 @@ okuribito.apply("config/okuribito.yml")
 ## License
 
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
-
+Copyright 2016 Yasuhiro Matsumura.

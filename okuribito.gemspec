@@ -9,8 +9,8 @@ Gem::Specification.new do |spec|
   spec.authors       = ["muramurasan"]
   spec.email         = ["ym.works1985@gmail.com"]
 
-  spec.summary       = "Monitoring system of the method call"
-  spec.description   = "Okuribito monitors the method call by the yaml."
+  spec.summary       = "Okuribito monitors the method call, and exec specified code."
+  spec.description   = "Okuribito monitors the method call, and exec specified code."
   spec.homepage      = "https://github.com/muramurasan/okuribito"
   spec.license       = "MIT"
 
