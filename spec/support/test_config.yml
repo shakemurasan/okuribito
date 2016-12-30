@@ -1,5 +1,7 @@
 TestTarget:
   - ".deprecated_self_method"
   - "#deprecated_method"
+  - "#deprecated_method?"
+  - "#deprecated_method!"
 UnknownTarget:
   - ".unknown_method"

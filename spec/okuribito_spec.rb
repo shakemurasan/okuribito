@@ -95,11 +95,29 @@ describe Okuribito do
       end
 
       context "when target instance method called" do
-        before do
-          TestTarget.new.deprecated_method
+        context "(normal name)" do
+          before do
+            TestTarget.new.deprecated_method
+          end
+
+          it { is_expected.to eq "TestTarget#deprecated_method" }
         end
 
-        it { is_expected.to eq "TestTarget#deprecated_method" }
+        context "(methods ending in ?)" do
+          before do
+            TestTarget.new.deprecated_method?
+          end
+
+          it { is_expected.to eq "TestTarget#deprecated_method?" }
+        end
+
+        context "(methods ending in !)" do
+          before do
+            TestTarget.new.deprecated_method!
+          end
+
+          it { is_expected.to eq "TestTarget#deprecated_method!" }
+        end
       end
     end
   end

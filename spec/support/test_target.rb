@@ -5,4 +5,10 @@ class TestTarget
 
   def deprecated_method
   end
+
+  def deprecated_method?
+  end
+
+  def deprecated_method!
+  end
 end

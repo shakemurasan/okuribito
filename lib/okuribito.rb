@@ -25,11 +25,12 @@ module Okuribito
 
     module FunctionalPatchModule
       def define_patch(method_name, patch, id, opt = {})
-        patch.instance_variable_set("@#{method_name}_#{id}_called", false)
+        sn = method_name.to_s.gsub(/\?/, "__q").gsub(/!/, "__e")
+        patch.instance_variable_set("@#{sn}_#{id}_called", false)
         define_method(method_name) do |*args|
-          if block_given? && !patch.instance_variable_get("@#{method_name}_#{id}_called")
+          if block_given? && !patch.instance_variable_get("@#{sn}_#{id}_called")
             yield(to_s, caller)
-            patch.instance_variable_set("@#{method_name}_#{id}_called", true) if opt[:once_detect]
+            patch.instance_variable_set("@#{sn}_#{id}_called", true) if opt[:once_detect]
           end
           super(*args)
         end
