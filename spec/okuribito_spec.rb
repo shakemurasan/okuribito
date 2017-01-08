@@ -53,6 +53,22 @@ describe Okuribito do
         it { is_expected.to match "#<TestTarget:0x[0-9a-f]+> deprecated_method #{dummy_caller[0]}" }
       end
 
+      context "when target instance method called (methods ending in ?)" do
+        before do
+          TestTarget.new.deprecated_method?
+        end
+
+        it { is_expected.to match "#<TestTarget:0x[0-9a-f]+> deprecated_method\\? #{dummy_caller[0]}" }
+      end
+
+      context "when target instance method called (methods ending in !)" do
+        before do
+          TestTarget.new.deprecated_method!
+        end
+
+        it { is_expected.to match "#<TestTarget:0x[0-9a-f]+> deprecated_method! #{dummy_caller[0]}" }
+      end
+
       context "when target instance method called twice" do
         let(:test_target) { TestTarget.new }
 
