@@ -9,6 +9,33 @@ module Okuribito
     INSTANCE_METHOD_SYMBOL = "#".freeze
     PATTERN = /\A(?<symbol>[#{CLASS_METHOD_SYMBOL}#{INSTANCE_METHOD_SYMBOL}])(?<method_name>.+)\z/
 
+    module SimplePatchModule
+      private
+
+      def define_patch(method_name, _patch, _id, _opt = {})
+        define_method(method_name) do |*args|
+          yield(to_s, caller) if block_given?
+          super(*args)
+        end
+      end
+    end
+
+    module FunctionalPatchModule
+      private
+
+      def define_patch(method_name, patch, id, opt = {})
+        sn = method_name.to_s.gsub(/\?/, "__q").gsub(/!/, "__e")
+        patch.instance_variable_set("@#{sn}_#{id}_called", false)
+        define_method(method_name) do |*args|
+          if block_given? && !patch.instance_variable_get("@#{sn}_#{id}_called")
+            yield(to_s, caller)
+            patch.instance_variable_set("@#{sn}_#{id}_called", true) if opt[:once_detect]
+          end
+          super(*args)
+        end
+      end
+    end
+
     def initialize(opt = {}, &callback)
       @callback = callback
       @opt ||= opt
@@ -22,40 +49,6 @@ module Okuribito
     end
 
     private
-
-    def patch_module(opt, patch_name)
-      if opt.present?
-        if FunctionalPatchModule.const_defined?(patch_name)
-          Module.new.extend(FunctionalPatchModule)
-        else
-          FunctionalPatchModule.const_set(patch_name, Module.new.extend(FunctionalPatchModule))
-        end
-      else
-        Module.new.extend(SimplePatchModule)
-      end
-    end
-
-    def defined_namespace?(constants)
-      namespace = Object
-      constants.each do |constant|
-        return false unless namespace.const_defined?(constant)
-        namespace = "#{namespace}::#{constant}".constantize
-      end
-      true
-    end
-
-    def defined_class?(namespace, class_name)
-      namespace.const_defined?(class_name) && namespace.const_get(class_name).is_a?(Class)
-    end
-
-    def constants_to_namespace(constants)
-      if constants.size == 1
-        Object
-      else
-        return false unless defined_namespace?(constants[0..-2])
-        constants[0..-2].join("::").constantize
-      end
-    end
 
     def patch_okuribito(full_class_name, observe_methods)
       constants = full_class_name.split("::")
@@ -102,30 +95,37 @@ module Okuribito
       end
     end
 
-    module SimplePatchModule
-      private
-
-      def define_patch(method_name, _patch, _id, _opt = {})
-        define_method(method_name) do |*args|
-          yield(to_s, caller) if block_given?
-          super(*args)
+    def patch_module(opt, patch_name)
+      if opt.present?
+        if FunctionalPatchModule.const_defined?(patch_name)
+          Module.new.extend(FunctionalPatchModule)
+        else
+          FunctionalPatchModule.const_set(patch_name, Module.new.extend(FunctionalPatchModule))
         end
+      else
+        Module.new.extend(SimplePatchModule)
       end
     end
 
-    module FunctionalPatchModule
-      private
+    def defined_namespace?(constants)
+      namespace = Object
+      constants.each do |constant|
+        return false unless namespace.const_defined?(constant)
+        namespace = "#{namespace}::#{constant}".constantize
+      end
+      true
+    end
 
-      def define_patch(method_name, patch, id, opt = {})
-        sn = method_name.to_s.gsub(/\?/, "__q").gsub(/!/, "__e")
-        patch.instance_variable_set("@#{sn}_#{id}_called", false)
-        define_method(method_name) do |*args|
-          if block_given? && !patch.instance_variable_get("@#{sn}_#{id}_called")
-            yield(to_s, caller)
-            patch.instance_variable_set("@#{sn}_#{id}_called", true) if opt[:once_detect]
-          end
-          super(*args)
-        end
+    def defined_class?(namespace, class_name)
+      namespace.const_defined?(class_name) && namespace.const_get(class_name).is_a?(Class)
+    end
+
+    def constants_to_namespace(constants)
+      if constants.size == 1
+        Object
+      else
+        return false unless defined_namespace?(constants[0..-2])
+        constants[0..-2].join("::").constantize
       end
     end
   end
