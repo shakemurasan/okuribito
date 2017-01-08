@@ -14,33 +14,6 @@ module Okuribito
       @opt ||= opt
     end
 
-    module SimplePatchModule
-      private
-
-      def define_patch(method_name, _patch, _id, _opt = {})
-        define_method(method_name) do |*args|
-          yield(to_s, caller) if block_given?
-          super(*args)
-        end
-      end
-    end
-
-    module FunctionalPatchModule
-      private
-
-      def define_patch(method_name, patch, id, opt = {})
-        sn = method_name.to_s.gsub(/\?/, "__q").gsub(/!/, "__e")
-        patch.instance_variable_set("@#{sn}_#{id}_called", false)
-        define_method(method_name) do |*args|
-          if block_given? && !patch.instance_variable_get("@#{sn}_#{id}_called")
-            yield(to_s, caller)
-            patch.instance_variable_set("@#{sn}_#{id}_called", true) if opt[:once_detect]
-          end
-          super(*args)
-        end
-      end
-    end
-
     def apply(yaml_path)
       yaml = YAML.load_file(yaml_path)
       yaml.each do |class_name, observe_methods|
@@ -126,6 +99,33 @@ module Okuribito
         end
         prepend i_method_patch if i_method_patched > 0
         singleton_class.send(:prepend, c_method_patch) if c_method_patched > 0
+      end
+    end
+
+    module SimplePatchModule
+      private
+
+      def define_patch(method_name, _patch, _id, _opt = {})
+        define_method(method_name) do |*args|
+          yield(to_s, caller) if block_given?
+          super(*args)
+        end
+      end
+    end
+
+    module FunctionalPatchModule
+      private
+
+      def define_patch(method_name, patch, id, opt = {})
+        sn = method_name.to_s.gsub(/\?/, "__q").gsub(/!/, "__e")
+        patch.instance_variable_set("@#{sn}_#{id}_called", false)
+        define_method(method_name) do |*args|
+          if block_given? && !patch.instance_variable_get("@#{sn}_#{id}_called")
+            yield(to_s, caller)
+            patch.instance_variable_set("@#{sn}_#{id}_called", true) if opt[:once_detect]
+          end
+          super(*args)
+        end
       end
     end
   end
