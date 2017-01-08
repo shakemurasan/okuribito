@@ -15,6 +15,8 @@ module Okuribito
     end
 
     module SimplePatchModule
+      private
+
       def define_patch(method_name, _patch, _id, _opt = {})
         define_method(method_name) do |*args|
           yield(to_s, caller) if block_given?
@@ -24,6 +26,8 @@ module Okuribito
     end
 
     module FunctionalPatchModule
+      private
+
       def define_patch(method_name, patch, id, opt = {})
         sn = method_name.to_s.gsub(/\?/, "__q").gsub(/!/, "__e")
         patch.instance_variable_set("@#{sn}_#{id}_called", false)
@@ -43,6 +47,8 @@ module Okuribito
         patch_okuribito(class_name, observe_methods)
       end
     end
+
+    private
 
     def patch_module(opt, patch_name)
       if opt.present?
