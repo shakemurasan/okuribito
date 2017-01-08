@@ -5,3 +5,9 @@ TestTarget:
   - "#deprecated_method!"
 UnknownTarget:
   - ".unknown_method"
+TestModule::TestTarget:
+  - "#deprecated_method"
+TestModule::NestedTestModule::TestTarget:
+  - "#deprecated_method"
+NestedTestModule::TestModule::TestTarget:
+  - "#deprecated_method"

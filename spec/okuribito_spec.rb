@@ -72,6 +72,26 @@ describe Okuribito do
           it { is_expected.not_to match "#<TestTarget:0x[0-9a-f]+> deprecated_method #{dummy_caller[0]}\n" }
         end
       end
+
+      context "when target instance method called (class under module)" do
+        let(:test_target) { TestModule::TestTarget.new }
+
+        before do
+          test_target.deprecated_method
+        end
+
+        it { is_expected.to match "#<TestModule::TestTarget:0x[0-9a-f]+> deprecated_method #{dummy_caller[0]}" }
+      end
+
+      context "when target instance method called (class under nested module)" do
+        let(:test_target) { TestModule::NestedTestModule::TestTarget.new }
+
+        before do
+          test_target.deprecated_method
+        end
+
+        it { is_expected.to match "#<TestModule::NestedTestModule::TestTarget:0x[0-9a-f]+> deprecated_method #{dummy_caller[0]}" }
+      end
     end
   end
 
@@ -118,6 +138,22 @@ describe Okuribito do
 
           it { is_expected.to eq "TestTarget#deprecated_method!" }
         end
+      end
+
+      context "when target instance method called (class under module)" do
+        before do
+          TestModule::TestTarget.new.deprecated_method
+        end
+
+        it { is_expected.to eq "TestModule::TestTarget#deprecated_method" }
+      end
+
+      context "when target instance method called (class under nested module)" do
+        before do
+          TestModule::NestedTestModule::TestTarget.new.deprecated_method
+        end
+
+        it { is_expected.to eq "TestModule::NestedTestModule::TestTarget#deprecated_method" }
       end
     end
   end

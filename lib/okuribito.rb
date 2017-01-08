@@ -44,7 +44,7 @@ module Okuribito
       end
     end
 
-    def self.module(opt, patch_name)
+    def patch_module(opt, patch_name)
       if opt.present?
         if FunctionalPatchModule.const_defined?(patch_name)
           Module.new.extend(FunctionalPatchModule)
@@ -83,12 +83,13 @@ module Okuribito
       class_name = constants[-1]
       return unless (namespace = constants_to_namespace(constants))
       return unless defined_class?(namespace, class_name)
+      snamespace = namespace.to_s.gsub(/::/, "")
 
       callback = @callback
       opt ||= @opt
       klass = full_class_name.constantize
-      i_method_patch = Okuribito::OkuribitoPatch.module(opt, "#{class_name}InstancePatch")
-      c_method_patch = Okuribito::OkuribitoPatch.module(opt, "#{class_name}ClassPatch")
+      i_method_patch = patch_module(opt, "Ns#{snamespace}Class#{class_name}InstancePatch")
+      c_method_patch = patch_module(opt, "Ns#{snamespace}Class#{class_name}ClassPatch")
       i_method_patched = 0
       c_method_patched = 0
 
@@ -103,7 +104,7 @@ module Okuribito
             next unless klass.instance_methods.include?(method_name)
             i_method_patch.module_eval do
               define_patch(method_name, i_method_patch, "i", opt) do |obj_name, caller_info|
-                callback.call(method_name, obj_name, caller_info, class_name, symbol)
+                callback.call(method_name, obj_name, caller_info, full_class_name, symbol)
               end
             end
             i_method_patched += 1
@@ -111,7 +112,7 @@ module Okuribito
             next unless klass.respond_to?(method_name)
             c_method_patch.module_eval do
               define_patch(method_name, c_method_patch, "c", opt) do |obj_name, caller_info|
-                callback.call(method_name, obj_name, caller_info, class_name, symbol)
+                callback.call(method_name, obj_name, caller_info, full_class_name, symbol)
               end
             end
             c_method_patched += 1
