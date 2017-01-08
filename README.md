@@ -41,6 +41,8 @@ User:
   - '#feed'
 Micropost:
   - '.from_users_followed_by'
+Admin::Manage:
+  - '.add_user'
 ```
 
 By writing the following code to start the monitoring of the method.
