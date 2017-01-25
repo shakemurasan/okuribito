@@ -24,7 +24,7 @@ module Okuribito
       private
 
       def define_patch(method_name, patch, id, opt = {})
-        sn = method_name.to_s.gsub(/\?/, "__q").gsub(/!/, "__e")
+        sn = method_name.to_s.gsub(/\?/, "__q").gsub(/!/, "__e").gsub(/=/, "__eq")
         patch.instance_variable_set("@#{sn}_#{id}_called", false)
         define_method(method_name) do |*args|
           if block_given? && !patch.instance_variable_get("@#{sn}_#{id}_called")
