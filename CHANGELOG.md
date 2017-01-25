@@ -1,4 +1,7 @@
 # CHANGELOG
+## [0.2.1](https://github.com/muramurasan/okuribito_rails/releases/tag/v0.2.1) (January 25, 2017)
+* Fix: Assignment operator causes error #34
+
 ## [0.2.0](https://github.com/muramurasan/okuribito_rails/releases/tag/v0.2.0) (January 8, 2017)
 * Correspond to namespace
 
