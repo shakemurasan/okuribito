@@ -51,17 +51,12 @@ module Okuribito
     private
 
     def patch_okuribito(full_class_name, observe_methods)
-      constants = full_class_name.split("::")
-      class_name = constants[-1]
-      return unless (namespace = constants_to_namespace(constants))
-      return unless defined_class?(namespace, class_name)
-      snamespace = namespace.to_s.gsub(/::/, "")
-
       callback = @callback
       opt ||= @opt
       klass = full_class_name.constantize
-      i_method_patch = patch_module(opt, "Ns#{snamespace}Class#{class_name}InstancePatch")
-      c_method_patch = patch_module(opt, "Ns#{snamespace}Class#{class_name}ClassPatch")
+      uniq_constant = full_class_name.gsub(/::/, "Sp")
+      i_method_patch = patch_module(opt, "#{uniq_constant}InstancePatch")
+      c_method_patch = patch_module(opt, "#{uniq_constant}ClassPatch")
       i_method_patched = 0
       c_method_patched = 0
 
@@ -104,28 +99,6 @@ module Okuribito
         end
       else
         Module.new.extend(SimplePatchModule)
-      end
-    end
-
-    def defined_namespace?(constants)
-      namespace = Object
-      constants.each do |constant|
-        return false unless namespace.const_defined?(constant)
-        namespace = "#{namespace}::#{constant}".constantize
-      end
-      true
-    end
-
-    def defined_class?(namespace, class_name)
-      namespace.const_defined?(class_name) && namespace.const_get(class_name).is_a?(Class)
-    end
-
-    def constants_to_namespace(constants)
-      if constants.size == 1
-        Object
-      else
-        return false unless defined_namespace?(constants[0..-2])
-        constants[0..-2].join("::").constantize
       end
     end
   end

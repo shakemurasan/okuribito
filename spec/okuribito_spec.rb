@@ -4,7 +4,7 @@ require "support/test_target"
 require "okuribito"
 
 describe Okuribito do
-  let(:setting_path) { "spec/support/test_config.yml" }
+  let(:setting_path) { "spec/support/good_test_config.yml" }
   let(:dummy_caller) { ["dummy_caller"] }
   let(:output) { StringIO.new }
   let(:option) { {} }
