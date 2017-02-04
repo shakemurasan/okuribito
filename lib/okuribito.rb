@@ -48,6 +48,11 @@ module Okuribito
       end
     end
 
+    def apply_one(full_method_name)
+      class_name, symbol, method_name = full_method_name.split(/(\.|#)/)
+      patch_okuribito(class_name, [symbol + method_name])
+    end
+
     private
 
     def patch_okuribito(full_class_name, observe_methods)

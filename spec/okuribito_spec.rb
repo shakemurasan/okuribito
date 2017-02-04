@@ -12,13 +12,16 @@ describe Okuribito do
   describe "simple version" do
     before do
       allow_any_instance_of(Kernel).to receive(:caller).and_return(dummy_caller)
-      okuribito = Okuribito::OkuribitoPatch.new(option) do |method_name, obj_name, caller_info|
+      @okuribito = Okuribito::OkuribitoPatch.new(option) do |method_name, obj_name, caller_info, _class_name, _method_symbol|
         output.puts "#{obj_name} #{method_name} #{caller_info[0]}"
       end
-      okuribito.apply(setting_path)
     end
 
-    describe "#define_okuribito_patch" do
+    describe "#apply" do
+      before do
+        @okuribito.apply(setting_path)
+      end
+
       subject { output.string.chomp }
 
       context "when target class method called" do
@@ -109,17 +112,42 @@ describe Okuribito do
         it { is_expected.to match "#<TestModule::NestedTestModule::TestTarget:0x[0-9a-f]+> deprecated_method #{dummy_caller[0]}" }
       end
     end
+
+    describe "#apply_one" do
+      subject { output.string.chomp }
+
+      context "when target class method called" do
+        before do
+          @okuribito.apply_one("TestTarget.deprecated_self_method")
+          TestTarget.deprecated_self_method
+        end
+
+        it { is_expected.to eq "TestTarget deprecated_self_method #{dummy_caller[0]}" }
+      end
+
+      context "when target instance method called" do
+        before do
+          @okuribito.apply_one("TestTarget#deprecated_method")
+          TestTarget.new.deprecated_method
+        end
+
+        it { is_expected.to match "#<TestTarget:0x[0-9a-f]+> deprecated_method #{dummy_caller[0]}" }
+      end
+    end
   end
 
   describe "functional version" do
     before do
-      okuribito = Okuribito::OkuribitoPatch.new(option) do |method_name, _obj_name, _caller_info, class_name, method_symbol|
+      @okuribito = Okuribito::OkuribitoPatch.new(option) do |method_name, _obj_name, _caller_info, class_name, method_symbol|
         output.puts "#{class_name}#{method_symbol}#{method_name}"
       end
-      okuribito.apply(setting_path)
     end
 
-    describe "#define_okuribito_patch" do
+    describe "#apply" do
+      before do
+        @okuribito.apply(setting_path)
+      end
+
       subject { output.string.chomp }
 
       context "when target class method called" do
@@ -170,6 +198,30 @@ describe Okuribito do
         end
 
         it { is_expected.to eq "TestModule::NestedTestModule::TestTarget#deprecated_method" }
+      end
+    end
+
+    describe "#apply_one" do
+      subject { output.string.chomp }
+
+      context "when target class method called" do
+        before do
+          @okuribito.apply_one("TestTarget.deprecated_self_method")
+          TestTarget.deprecated_self_method
+        end
+
+        it { is_expected.to eq "TestTarget.deprecated_self_method" }
+      end
+
+      context "when target instance method called" do
+        context "(normal name)" do
+          before do
+            @okuribito.apply_one("TestTarget#deprecated_method")
+            TestTarget.new.deprecated_method
+          end
+
+          it { is_expected.to eq "TestTarget#deprecated_method" }
+        end
       end
     end
   end

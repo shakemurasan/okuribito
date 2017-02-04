@@ -65,6 +65,15 @@ end
 okuribito.apply("config/okuribito.yml")
 ```
 
+You can also monitor a single method with a string specification.
+
+```ruby
+okuribito = Okuribito::OkuribitoPatch.new do |method_name, obj_name, caller_info|
+  # do something as you like!
+end
+okuribito.apply("TestTarget#deprecated_method")
+```
+
 ### ex: Ruby On Rails
 
 Edit `application.rb`
