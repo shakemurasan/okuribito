@@ -1,4 +1,7 @@
 # CHANGELOG
+## [0.2.3](https://github.com/muramurasan/okuribito_rails/releases/tag/v0.2.3) (February 5, 2017)
+* Feature: Monitor a single method with a string specification.
+
 ## [0.2.2](https://github.com/muramurasan/okuribito_rails/releases/tag/v0.2.2) (January 25, 2017)
 * Fix: Stop confirming the existence of a namespace / class. #35
 
