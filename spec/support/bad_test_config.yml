@@ -3,6 +3,7 @@ TestTarget:
   - "#deprecated_method"
   - "#deprecated_method?"
   - "#deprecated_method!"
+  - "#deprecated_method_with_args"
 UnknownTarget:
   - ".unknown_method"
 TestModule::TestTarget:

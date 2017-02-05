@@ -14,7 +14,7 @@ module Okuribito
 
       def define_patch(method_name, _patch, _id, _opt = {})
         define_method(method_name) do |*args|
-          yield(to_s, caller) if block_given?
+          yield(to_s, caller, *args) if block_given?
           super(*args)
         end
       end
@@ -28,7 +28,7 @@ module Okuribito
         patch.instance_variable_set("@#{sn}_#{id}_called", false)
         define_method(method_name) do |*args|
           if block_given? && !patch.instance_variable_get("@#{sn}_#{id}_called")
-            yield(to_s, caller)
+            yield(to_s, caller, *args)
             patch.instance_variable_set("@#{sn}_#{id}_called", true) if opt[:once_detect]
           end
           super(*args)
@@ -75,16 +75,16 @@ module Okuribito
           when INSTANCE_METHOD_SYMBOL
             next unless klass.instance_methods.include?(method_name)
             i_method_patch.module_eval do
-              define_patch(method_name, i_method_patch, "i", opt) do |obj_name, caller_info|
-                callback.call(method_name, obj_name, caller_info, full_class_name, symbol)
+              define_patch(method_name, i_method_patch, "i", opt) do |obj_name, caller_info, args|
+                callback.call(method_name, obj_name, caller_info, full_class_name, symbol, args)
               end
             end
             i_method_patched += 1
           when CLASS_METHOD_SYMBOL
             next unless klass.respond_to?(method_name)
             c_method_patch.module_eval do
-              define_patch(method_name, c_method_patch, "c", opt) do |obj_name, caller_info|
-                callback.call(method_name, obj_name, caller_info, full_class_name, symbol)
+              define_patch(method_name, c_method_patch, "c", opt) do |obj_name, caller_info, args|
+                callback.call(method_name, obj_name, caller_info, full_class_name, symbol, args)
               end
             end
             c_method_patched += 1

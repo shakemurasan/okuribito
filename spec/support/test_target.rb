@@ -11,6 +11,9 @@ class TestTarget
 
   def deprecated_method!
   end
+
+  def deprecated_method_with_args(args)
+  end
 end
 
 module TestModule

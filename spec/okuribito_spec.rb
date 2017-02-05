@@ -138,8 +138,8 @@ describe Okuribito do
 
   describe "functional version" do
     before do
-      @okuribito = Okuribito::OkuribitoPatch.new(option) do |method_name, _obj_name, _caller_info, class_name, method_symbol|
-        output.puts "#{class_name}#{method_symbol}#{method_name}"
+      @okuribito = Okuribito::OkuribitoPatch.new(option) do |method_name, _obj_name, _caller_info, class_name, method_symbol, args|
+        output.puts "#{class_name}#{method_symbol}#{method_name}(#{args})"
       end
     end
 
@@ -155,7 +155,7 @@ describe Okuribito do
           TestTarget.deprecated_self_method
         end
 
-        it { is_expected.to eq "TestTarget.deprecated_self_method" }
+        it { is_expected.to eq "TestTarget.deprecated_self_method()" }
       end
 
       context "when target instance method called" do
@@ -164,7 +164,7 @@ describe Okuribito do
             TestTarget.new.deprecated_method
           end
 
-          it { is_expected.to eq "TestTarget#deprecated_method" }
+          it { is_expected.to eq "TestTarget#deprecated_method()" }
         end
 
         context "(methods ending in ?)" do
@@ -172,7 +172,7 @@ describe Okuribito do
             TestTarget.new.deprecated_method?
           end
 
-          it { is_expected.to eq "TestTarget#deprecated_method?" }
+          it { is_expected.to eq "TestTarget#deprecated_method?()" }
         end
 
         context "(methods ending in !)" do
@@ -180,7 +180,15 @@ describe Okuribito do
             TestTarget.new.deprecated_method!
           end
 
-          it { is_expected.to eq "TestTarget#deprecated_method!" }
+          it { is_expected.to eq "TestTarget#deprecated_method!()" }
+        end
+
+        context "(methods with args)" do
+          before do
+            TestTarget.new.deprecated_method_with_args(5)
+          end
+
+          it { is_expected.to eq "TestTarget#deprecated_method_with_args(5)" }
         end
       end
 
@@ -189,7 +197,7 @@ describe Okuribito do
           TestModule::TestTarget.new.deprecated_method
         end
 
-        it { is_expected.to eq "TestModule::TestTarget#deprecated_method" }
+        it { is_expected.to eq "TestModule::TestTarget#deprecated_method()" }
       end
 
       context "when target instance method called (class under nested module)" do
@@ -197,7 +205,7 @@ describe Okuribito do
           TestModule::NestedTestModule::TestTarget.new.deprecated_method
         end
 
-        it { is_expected.to eq "TestModule::NestedTestModule::TestTarget#deprecated_method" }
+        it { is_expected.to eq "TestModule::NestedTestModule::TestTarget#deprecated_method()" }
       end
     end
 
@@ -210,7 +218,7 @@ describe Okuribito do
           TestTarget.deprecated_self_method
         end
 
-        it { is_expected.to eq "TestTarget.deprecated_self_method" }
+        it { is_expected.to eq "TestTarget.deprecated_self_method()" }
       end
 
       context "when target instance method called" do
@@ -220,7 +228,7 @@ describe Okuribito do
             TestTarget.new.deprecated_method
           end
 
-          it { is_expected.to eq "TestTarget#deprecated_method" }
+          it { is_expected.to eq "TestTarget#deprecated_method()" }
         end
       end
     end

@@ -3,6 +3,7 @@ TestTarget:
   - "#deprecated_method"
   - "#deprecated_method?"
   - "#deprecated_method!"
+  - "#deprecated_method_with_args"
 TestModule::TestTarget:
   - "#deprecated_method"
 TestModule::NestedTestModule::TestTarget:
