@@ -137,14 +137,11 @@ describe Okuribito do
   end
 
   describe "functional version" do
-    before do
-      @okuribito = Okuribito::OkuribitoPatch.new(option) do |method_name, _obj_name, _caller_info, class_name, method_symbol, args|
-        output.puts "#{class_name}#{method_symbol}#{method_name}(#{args})"
-      end
-    end
-
     describe "#apply" do
       before do
+        @okuribito = Okuribito::OkuribitoPatch.new(option) do |method_name, _obj_name, _caller_info, class_name, method_symbol, args|
+          output.puts "#{class_name}#{method_symbol}#{method_name}(#{args})"
+        end
         @okuribito.apply(setting_path)
       end
 
@@ -212,24 +209,42 @@ describe Okuribito do
     describe "#apply_one" do
       subject { output.string.chomp }
 
-      context "when target class method called" do
+      context "no argument" do
         before do
-          @okuribito.apply_one("TestTarget.deprecated_self_method")
-          TestTarget.deprecated_self_method
+          @okuribito = Okuribito::OkuribitoPatch.new(option) do |method_name, _obj_name, _caller_info, class_name, method_symbol, args|
+            output.puts "#{class_name}#{method_symbol}#{method_name}"
+          end
         end
 
-        it { is_expected.to eq "TestTarget.deprecated_self_method()" }
-      end
+        context "when target class method called" do
+          before do
+            @okuribito.apply_one("TestTarget.deprecated_self_method")
+            TestTarget.deprecated_self_method
+          end
 
-      context "when target instance method called" do
-        context "(normal name)" do
+          it { is_expected.to eq "TestTarget.deprecated_self_method" }
+        end
+
+        context "when target instance method called" do
           before do
             @okuribito.apply_one("TestTarget#deprecated_method")
             TestTarget.new.deprecated_method
           end
 
-          it { is_expected.to eq "TestTarget#deprecated_method()" }
+          it { is_expected.to eq "TestTarget#deprecated_method" }
         end
+      end
+
+      context "with argument" do
+        before do
+          okuribito = Okuribito::OkuribitoPatch.new(option) do |method_name, _obj_name, _caller_info, class_name, method_symbol, args|
+            output.puts "#{class_name}#{method_symbol}#{method_name}(#{args})"
+          end
+          okuribito.apply_one("TestTarget#deprecated_method_with_args")
+          TestTarget.new.deprecated_method_with_args(5)
+        end
+
+        it { is_expected.to eq "TestTarget#deprecated_method_with_args(5)" }
       end
     end
   end
