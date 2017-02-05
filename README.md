@@ -74,6 +74,22 @@ end
 okuribito.apply("TestTarget#deprecated_method")
 ```
 
+You can use the following parameters when executing arbitrary code.
+
+* method_name
+* obj_name
+* caller_info (backtrace)
+* class_name
+* symbol (`.` or `#`)
+* args
+
+```ruby
+okuribito = Okuribito::OkuribitoPatch.new do |method_name, obj_name, caller_info, class_name, symbol, args|
+  # do something as you like!
+end
+okuribito.apply("TestTarget#deprecated_method_with_args")
+```
+
 ### ex: Ruby On Rails
 
 Edit `application.rb`
