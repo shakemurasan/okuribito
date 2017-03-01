@@ -71,7 +71,7 @@ You can also monitor a single method with a string specification.
 okuribito = Okuribito::OkuribitoPatch.new do |method_name, obj_name, caller_info|
   # do something as you like!
 end
-okuribito.apply("TestTarget#deprecated_method")
+okuribito.apply_one("TestTarget#deprecated_method")
 ```
 
 You can use the following parameters when executing arbitrary code.
