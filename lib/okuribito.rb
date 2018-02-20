@@ -58,7 +58,11 @@ module Okuribito
     def patch_okuribito(full_class_name, observe_methods)
       callback = @callback
       opt ||= @opt
-      klass = full_class_name.constantize
+      klass = full_class_name.safe_constantize
+      unless klass
+        print_undefined_class(full_class_name)
+        return
+      end
       uniq_constant = full_class_name.gsub(/::/, "Sp")
       i_method_patch = patch_module(opt, "#{uniq_constant}InstancePatch")
       c_method_patch = patch_module(opt, "#{uniq_constant}ClassPatch")
@@ -105,6 +109,10 @@ module Okuribito
       else
         Module.new.extend(SimplePatchModule)
       end
+    end
+
+    def print_undefined_class(full_class_name)
+      puts "Undefined class: #{full_class_name}"
     end
   end
 end

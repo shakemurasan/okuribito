@@ -223,6 +223,38 @@ describe Okuribito do
           it { is_expected.to eq "TestTarget#deprecated_method" }
         end
       end
+
+    end
+
+    describe "#patch_okuribito" do
+      before do
+        @okuribito = Okuribito::OkuribitoPatch.new(option) do |method_name, obj_name, caller_info, _class_name, _method_symbol|
+          output.puts "#{obj_name} #{method_name} #{caller_info[0]}"
+        end
+      end
+
+      context "when target undefined class" do
+        subject { @okuribito.send(:patch_okuribito, "UndefinedTestClass", ["#deprecated_method"]) }
+
+        it do
+          expect(@okuribito).to receive(:print_undefined_class)
+          subject
+        end
+
+        it { expect { subject }.not_to raise_error }
+      end
+
+      context "when target undefined class method" do
+        subject { @okuribito.send(:patch_okuribito, "TestTarget", [".undefined_method"]) }
+
+        it { expect { subject }.not_to raise_error }
+      end
+
+      context "when target undefined instance method" do
+        subject { @okuribito.send(:patch_okuribito, "TestTarget", ["#undefined_method"]) }
+
+        it { expect { subject }.not_to raise_error }
+      end
     end
   end
 end
