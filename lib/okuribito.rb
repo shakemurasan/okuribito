@@ -53,6 +53,10 @@ module Okuribito
       patch_okuribito(class_name, [symbol + method_name])
     end
 
+    def apply_with_annotations
+
+    end
+
     private
 
     def patch_okuribito(full_class_name, observe_methods)
