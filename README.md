@@ -48,7 +48,7 @@ Admin::Manage:
 By writing the following code to start the monitoring of the method.
 
 ```ruby
-okuribito = Okuribito::OkuribitoPatch.new do |method_name, obj_name, caller_info|
+okuribito = Okuribito::Request.new do |method_name, obj_name, caller_info|
   # do something as you like!
 end
 okuribito.apply("config/okuribito.yml")
@@ -59,7 +59,7 @@ You can also give the option.
 `once_detect`: When it detects a method call, and run only once the code that has been set.
 
 ```ruby
-okuribito = Okuribito::OkuribitoPatch.new(once_detect: true) do |method_name, obj_name, caller_info|
+okuribito = Okuribito::Request.new(once_detect: true) do |method_name, obj_name, caller_info|
   # do something as you like!
 end
 okuribito.apply("config/okuribito.yml")
@@ -68,7 +68,7 @@ okuribito.apply("config/okuribito.yml")
 You can also monitor a single method with a string specification.
 
 ```ruby
-okuribito = Okuribito::OkuribitoPatch.new do |method_name, obj_name, caller_info|
+okuribito = Okuribito::Request.new do |method_name, obj_name, caller_info|
   # do something as you like!
 end
 okuribito.apply_one("TestTarget#deprecated_method")
@@ -84,7 +84,7 @@ You can use the following parameters when executing arbitrary code.
 * args
 
 ```ruby
-okuribito = Okuribito::OkuribitoPatch.new do |method_name, obj_name, caller_info, class_name, symbol, args|
+okuribito = Okuribito::Request.new do |method_name, obj_name, caller_info, class_name, symbol, args|
   # do something as you like!
 end
 okuribito.apply_one("TestTarget#deprecated_method_with_args")
@@ -97,7 +97,7 @@ Edit `application.rb`
 ```ruby
 class OkuribitoSetting < Rails::Railtie
   config.after_initialize do
-    okuribito = Okuribito::OkuribitoPatch.new do |method_name, obj_name, caller_info|
+    okuribito = Okuribito::Request.new do |method_name, obj_name, caller_info|
       # do something as you like!
     end
     okuribito.apply("config/okuribito.yml")
@@ -119,7 +119,7 @@ class TestTarget
   end
 end
 
-okuribito = Okuribito::OkuribitoPatch.new do |method_name, obj_name, caller_info|
+okuribito = Okuribito::Request.new do |method_name, obj_name, caller_info|
   puts "#{obj_name} #{method_name} #{caller_info[0]}"
 end
 okuribito.apply("config/okuribito.yml")
@@ -149,7 +149,7 @@ TestTarget deprecated_self_method example.rb:17:in `<main>'
 ### Full stacktrace
 
 ```ruby
-okuribito = Okuribito::OkuribitoPatch.new do |method_name, obj_name, caller_info|
+okuribito = Okuribito::Request.new do |method_name, obj_name, caller_info|
   puts "#############################################################"
   puts "#{obj_name} #{method_name} #{caller_info[0]}"
   puts "#############################################################"
