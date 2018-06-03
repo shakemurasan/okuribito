@@ -3,7 +3,7 @@ require "spec_helper"
 require "support/test_target"
 require "okuribito"
 
-describe Okuribito do
+describe Okuribito::OkuribitoPatch do
   let(:setting_path) { "spec/support/good_test_config.yml" }
   let(:dummy_caller) { ["dummy_caller"] }
   let(:output) { StringIO.new }
@@ -187,29 +187,6 @@ describe Okuribito do
 
           it { is_expected.to eq "TestTarget#deprecated_method" }
         end
-      end
-    end
-
-    describe "#patch_okuribito" do
-      context "when target undefined class" do
-        subject { okuribito.send(:patch_okuribito, "UndefinedTestClass", ["#deprecated_method"]) }
-
-        it do
-          expect(okuribito).to receive(:process_undefined_class)
-          expect { subject }.not_to raise_error
-        end
-      end
-
-      context "when target undefined class method" do
-        subject { okuribito.send(:patch_okuribito, "TestTarget", [".undefined_method"]) }
-
-        it { expect { subject }.not_to raise_error }
-      end
-
-      context "when target undefined instance method" do
-        subject { okuribito.send(:patch_okuribito, "TestTarget", ["#undefined_method"]) }
-
-        it { expect { subject }.not_to raise_error }
       end
     end
   end
