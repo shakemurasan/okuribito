@@ -223,7 +223,6 @@ describe Okuribito do
           it { is_expected.to eq "TestTarget#deprecated_method" }
         end
       end
-
     end
 
     describe "#patch_okuribito" do
