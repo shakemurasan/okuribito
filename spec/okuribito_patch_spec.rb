@@ -3,12 +3,12 @@ require "spec_helper"
 require "support/test_target"
 require "okuribito"
 
-describe Okuribito::OkuribitoPatch do
+describe Okuribito::Request do
   let(:setting_path) { "spec/support/good_test_config.yml" }
   let(:dummy_caller) { ["dummy_caller"] }
   let(:output) { StringIO.new }
   let(:option) { {} }
-  let(:okuribito) { Okuribito::OkuribitoPatch.new(option, &callback) }
+  let(:request) { Okuribito::Request.new(option, &callback) }
   let(:callback) { proc { |method_name, obj_name, caller_info, _class_name, _method_symbol| output.puts "#{obj_name} #{method_name} #{caller_info[0]}" } }
 
   describe "simple version" do
@@ -17,7 +17,7 @@ describe Okuribito::OkuribitoPatch do
     end
 
     describe "#apply" do
-      before { okuribito.apply(setting_path) }
+      before { request.apply(setting_path) }
 
       subject { output.string.chomp }
 
@@ -101,7 +101,7 @@ describe Okuribito::OkuribitoPatch do
 
       context "when target class method called" do
         before do
-          okuribito.apply_one("TestTarget.deprecated_self_method")
+          request.apply_one("TestTarget.deprecated_self_method")
           TestTarget.deprecated_self_method
         end
 
@@ -110,7 +110,7 @@ describe Okuribito::OkuribitoPatch do
 
       context "when target instance method called" do
         before do
-          okuribito.apply_one("TestTarget#deprecated_method")
+          request.apply_one("TestTarget#deprecated_method")
           TestTarget.new.deprecated_method
         end
 
@@ -123,7 +123,7 @@ describe Okuribito::OkuribitoPatch do
     let(:callback) { proc { |method_name, _obj_name, _caller_info, class_name, method_symbol| output.puts "#{class_name}#{method_symbol}#{method_name}" } }
 
     describe "#apply" do
-      before { okuribito.apply(setting_path) }
+      before { request.apply(setting_path) }
 
       subject { output.string.chomp }
 
@@ -171,7 +171,7 @@ describe Okuribito::OkuribitoPatch do
 
       context "when target class method called" do
         before do
-          okuribito.apply_one("TestTarget.deprecated_self_method")
+          request.apply_one("TestTarget.deprecated_self_method")
           TestTarget.deprecated_self_method
         end
 
@@ -181,7 +181,7 @@ describe Okuribito::OkuribitoPatch do
       context "when target instance method called" do
         context "(normal name)" do
           before do
-            okuribito.apply_one("TestTarget#deprecated_method")
+            request.apply_one("TestTarget#deprecated_method")
             TestTarget.new.deprecated_method
           end
 

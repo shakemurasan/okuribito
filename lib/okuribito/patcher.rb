@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require "okuribito/patch_module"
 require "active_support"
 require "active_support/core_ext"

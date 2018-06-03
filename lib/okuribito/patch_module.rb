@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Okuribito
   module SimplePatchModule
     private
