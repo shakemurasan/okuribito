@@ -1,4 +1,6 @@
 require "okuribito/patch_module"
+require "active_support"
+require "active_support/core_ext"
 
 module Okuribito
   class Patcher
@@ -20,8 +22,8 @@ module Okuribito
         return
       end
       uniq_constant = full_class_name.gsub(/::/, "Sp")
-      i_method_patch = patch_module("#{uniq_constant}InstancePatch")
-      c_method_patch = patch_module("#{uniq_constant}ClassPatch")
+      i_method_patch = patch_module("#{uniq_constant}InstancePatch", opt)
+      c_method_patch = patch_module("#{uniq_constant}ClassPatch", opt)
       i_method_patched = 0
       c_method_patched = 0
 
@@ -55,8 +57,10 @@ module Okuribito
       end
     end
 
-    def patch_module(patch_name)
-      if @opt.present?
+    private
+
+    def patch_module(patch_name, opt)
+      if opt.present?
         if FunctionalPatchModule.const_defined?(patch_name)
           Module.new.extend(FunctionalPatchModule)
         else
