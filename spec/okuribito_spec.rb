@@ -237,7 +237,7 @@ describe Okuribito do
         subject { @okuribito.send(:patch_okuribito, "UndefinedTestClass", ["#deprecated_method"]) }
 
         it do
-          expect(@okuribito).to receive(:print_undefined_class)
+          expect(@okuribito).to receive(:process_undefined_class)
           subject
         end
 

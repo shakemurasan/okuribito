@@ -60,7 +60,7 @@ module Okuribito
       opt ||= @opt
       klass = full_class_name.safe_constantize
       unless klass
-        print_undefined_class(full_class_name)
+        process_undefined_class(full_class_name)
         return
       end
       uniq_constant = full_class_name.gsub(/::/, "Sp")
@@ -111,8 +111,8 @@ module Okuribito
       end
     end
 
-    def print_undefined_class(full_class_name)
-      puts "Undefined class: #{full_class_name}"
+    def process_undefined_class(_full_class_name)
+      # do nothing....
     end
   end
 end
