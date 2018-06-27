@@ -1,4 +1,11 @@
 # CHANGELOG
+## [0.3.0](https://github.com/muramurasan/okuribito_rails/releases/tag/v0.3.0) (July 28, 2018)
+* FIX:
+  * Problems that cause errors when monitoring nonexistent classes. #39
+* Refactoring:
+  * Extract class and methods.
+  * Fix rspec.
+
 ## [0.2.3](https://github.com/muramurasan/okuribito_rails/releases/tag/v0.2.3) (February 5, 2017)
 * Feature: Monitor a single method with a string specification.
 * Feature: Make arguments referable when executing code.
