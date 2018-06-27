@@ -161,6 +161,11 @@ okuribito.apply("config/okuribito.yml")
 ### Other ideas
 - Send to Fluentd, TreasureData, Slack...
 
+## Compatibility
+- `Okuribito::OkuribitoPatch` has backward compatibility, but it is old class!
+- Later version 0.3.0, you should use `Okuribito::Request`
+
+
 ## License
 
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
